@@ -94,8 +94,8 @@ export const createUser = async (phoneNumber) => {
             await setDoc(doc(db, 'users', phoneNumber), {
                 phone: phoneNumber,
                 registration_date: registrationDate,
-                id: generateUniqueId(), // Replace with your logic to generate a unique ID
-                // Other user properties...
+                id: generateUniqueId(),
+                status: "active"
             });
 
             console.log(`User with phone number ${phoneNumber} created.`);
@@ -104,6 +104,27 @@ export const createUser = async (phoneNumber) => {
         }
     } catch (error) {
         console.error('Error creating user:', error);
+        throw error;
+    }
+};
+
+export const changeUserStatus = async (phone, newStatus) => {
+    try {
+        const existingUsers = await getUsers();
+        const existingUser = existingUsers.find(user => user.phone === phone);
+
+        if (existingUser) {
+            // User exists, update the status
+            await updateDoc(doc(db, 'users', phone), {
+                status: newStatus
+            });
+
+            console.log(`User with id ${phone} status updated to ${newStatus}.`);
+        } else {
+            console.log(`User with id ${phone} does not exist.`);
+        }
+    } catch (error) {
+        console.error('Error changing user status:', error);
         throw error;
     }
 };

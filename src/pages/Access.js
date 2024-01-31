@@ -1,62 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCheckCircle, FaBan } from 'react-icons/fa';
+import { getUsers, changeUserStatus } from '../services/firebaseServices';
+import { TailSpin } from 'react-loader-spinner';
 
 const AccessManagement = ({ darkMode }) => {
-  // Data . . .
-  const greenListedUsers = [
-    {
-      id: 1,
-      userName: 'John Doe',
-      accessStatus: 'Green Listed',
-    },
-    {
-      id: 2,
-      userName: 'Jane Smith',
-      accessStatus: 'Green Listed',
-    },
-    {
-      id: 3,
-      userName: 'Bob Johnson',
-      accessStatus: 'Green Listed',
-    },
-    // Add more green-listed users as needed
-  ];
+  const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [loadingAddToBlackList, setLoadingAddToBlackList] = useState(false);
+  const [loadingRemoveFromBlackList, setLoadingRemoveFromBlackList] = useState(false);
 
-  const blackListedUsers = [
-    {
-      id: 4,
-      userName: 'Mike Brown',
-      accessStatus: 'Black Listed',
-    },
-    {
-      id: 5,
-      userName: 'Emily White',
-      accessStatus: 'Black Listed',
-    },
-    {
-      id: 6,
-      userName: 'Chris Davis',
-      accessStatus: 'Black Listed',
-    },
-    // Add more black-listed users as needed
-  ];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await getUsers();
+        setUsers(fetchedUsers);
+      } catch (error) {
+        // Handle error
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
 
-  const AccessCard = ({ record, onAddToBlackList, onRemoveFromBlackList }) => {
+    fetchUsers();
+  }, []);
+
+  const greenListedUsers = users.filter((user) => user.status === 'active');
+  const blackListedUsers = users.filter((user) => user.status === 'inactive');
+
+  const AccessCard = ({ user, onAddToBlackList, onRemoveFromBlackList }) => {
     return (
       <div className="bg-white rounded-md overflow-hidden shadow-md m-4 flex">
         <div className="p-4 flex-1">
-          <h2 className="text-lg font-semibold">User: {record.userName}</h2>
-          <p className={`text-sm ${record.accessStatus === 'Green Listed' ? 'text-green-600' : 'text-red-600'}`}>
-            Access Status: {record.accessStatus}
+          <h2 className="text-lg font-semibold">User: {user.phone}</h2>
+          <p className={`text-sm ${user.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>
+            Access Status: {user.status === 'active' ? 'Green Listed' : 'Black Listed'}
           </p>
-          {record.accessStatus === 'Green Listed' && (
-            <button onClick={() => onAddToBlackList(record.id)} className="text-red-600 mt-2 focus:outline-none">
-              Add to Black List <FaBan className="inline-block ml-1" />
+          {user.status === 'active' && (
+            <button
+              onClick={() => onAddToBlackList(user.phone)}
+              className={`text-red-600 mt-2 focus:outline-none ${loadingAddToBlackList && 'opacity-50 cursor-not-allowed'}`}
+              disabled={loadingAddToBlackList}
+            >
+              {loadingAddToBlackList ? 'Adding to Black List...' : 'Add to Black List'} <FaBan className="inline-block ml-1" />
             </button>
           )}
-          {record.accessStatus === 'Black Listed' && (
-            <button onClick={() => onRemoveFromBlackList(record.id)} className="text-red-600 mt-2 focus:outline-none">
-              Remove from Black List <FaBan className="inline-block ml-1" />
+          {user.status === 'inactive' && (
+            <button
+              onClick={() => onRemoveFromBlackList(user.phone)}
+              className={`text-red-600 mt-2 focus:outline-none ${loadingRemoveFromBlackList && 'opacity-50 cursor-not-allowed'}`}
+              disabled={loadingRemoveFromBlackList}
+            >
+              {loadingRemoveFromBlackList ? 'Removing from Black List...' : 'Remove from Black List'} <FaBan className="inline-block ml-1" />
             </button>
           )}
         </div>
@@ -64,15 +59,39 @@ const AccessManagement = ({ darkMode }) => {
     );
   };
 
-  const addToBlackList = (userId) => {
-    // Handle adding user to the black list
-    console.log(`Add user with ID ${userId} to Black List`);
+  const addToBlackList = async (phone) => {
+    try {
+      setLoadingAddToBlackList(true);
+      await changeUserStatus(phone, "inactive");
+      const fetchedUsers = await getUsers();
+      setUsers(fetchedUsers);
+    } catch (error) {
+      console.error('Error adding user to Black List:', error);
+    } finally {
+      setLoadingAddToBlackList(false);
+    }
   };
 
-  const removeUserFromBlackList = (userId) => {
-    // Handle removing user from the black list
-    console.log(`Remove user with ID ${userId} from Black List`);
+  const removeUserFromBlackList = async (phone) => {
+    try {
+      setLoadingRemoveFromBlackList(true);
+      await changeUserStatus(phone, "active");
+      const fetchedUsers = await getUsers();
+      setUsers(fetchedUsers);
+    } catch (error) {
+      console.error('Error removing user from Black List:', error);
+    } finally {
+      setLoadingRemoveFromBlackList(false);
+    }
   };
+
+  if (loadingUsers) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <TailSpin type="TailSpin" color="blue" height={50} width={50} />
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen bg-[#f6f6f6] pl-[15px]`}>
@@ -82,7 +101,7 @@ const AccessManagement = ({ darkMode }) => {
         <div>
           {greenListedUsers.map((user) => (
             <div key={user.id} className="mb-4">
-              <AccessCard record={user} onAddToBlackList={addToBlackList} onRemoveFromBlackList={removeUserFromBlackList} />
+              <AccessCard user={user} onAddToBlackList={addToBlackList} onRemoveFromBlackList={removeUserFromBlackList} />
             </div>
           ))}
         </div>
@@ -91,7 +110,7 @@ const AccessManagement = ({ darkMode }) => {
         <div>
           {blackListedUsers.map((user) => (
             <div key={user.id} className="mb-4">
-              <AccessCard record={user} onAddToBlackList={addToBlackList} onRemoveFromBlackList={removeUserFromBlackList} />
+              <AccessCard user={user} onAddToBlackList={addToBlackList} onRemoveFromBlackList={removeUserFromBlackList} />
             </div>
           ))}
         </div>

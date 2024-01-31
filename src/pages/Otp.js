@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaEllipsisV, FaTrash, FaKey, FaClock } from 'react-icons/fa';
 
-const Otps = ({ darkMode }) => {
+const Otps = () => {
     // Data . . .
     const dummyOtps = [
         {

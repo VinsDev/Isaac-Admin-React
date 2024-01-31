@@ -1,52 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaEllipsisV, FaEdit, FaTrash, FaGlobe, FaUser } from 'react-icons/fa';
+import { getUsers, editUser, deleteUser } from '../services/firebaseServices';
+// import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import { TailSpin } from 'react-loader-spinner';
 
-const Users = ({ darkMode, setDarkMode }) => {
-    // Data . . .
-    const dummyUsers = [
-        {
-            id: 1,
-            name: 'John Doe',
-            image: 'https://placekitten.com/300/200', // Placeholder image
-            phoneNumber: '123-456-7890',
-            registrationDate: '2022-02-15',
-        },
-        {
-            id: 2,
-            name: 'Jane Smith',
-            image: 'https://placekitten.com/300/201', // Placeholder image
-            phoneNumber: '987-654-3210',
-            registrationDate: '2022-02-20',
-        },
-        {
-            id: 3,
-            name: 'Jane Smith',
-            image: 'https://placekitten.com/300/201', // Placeholder image
-            phoneNumber: '987-654-3210',
-            registrationDate: '2022-02-20',
-        },
-        {
-            id: 4,
-            name: 'Jane Smith',
-            image: 'https://placekitten.com/300/201', // Placeholder image
-            phoneNumber: '987-654-3210',
-            registrationDate: '2022-02-20',
-        },
-        {
-            id: 5,
-            name: 'Jane Smith',
-            image: 'https://placekitten.com/300/201', // Placeholder image
-            phoneNumber: '987-654-3210',
-            registrationDate: '2022-02-20',
-        },
-    ];
+
+const Users = () => {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const fetchedUsers = await getUsers();
+                setUsers(fetchedUsers);
+            } catch (error) {
+                // Handle error
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, []);
 
     const UserList = () => {
+        if (loading) {
+            return (
+                <div className="flex items-center justify-center h-full">
+                    <TailSpin type="TailSpin" color="blue" height={50} width={50} />
+                </div>
+            );
+        }
+
         return (
             <div>
-                {dummyUsers.map((user) => (
+                {users.map((user) => (
                     <div key={user.id} className="mb-4">
-                        <UserCard user={user} />
+                        <UserCard user={user} setLoading={setLoading} />
                     </div>
                 ))}
             </div>
@@ -58,7 +49,7 @@ const Users = ({ darkMode, setDarkMode }) => {
             <Header />
             <UserList />
         </div>
-    )
+    );
 };
 
 // Components . . .
@@ -82,7 +73,7 @@ const Header = () => {
     </div>)
 };
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user, setLoading }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleMenuToggle = () => {
@@ -90,16 +81,35 @@ const UserCard = ({ user }) => {
     };
 
     const handleEdit = () => {
-        // Handle edit operation
-        console.log(`Edit user: ${user.name}`);
+        // Call the editUser function from your services
+        // const newData = {};
+        // editUser(user.id, newData)
+        //     .then(() => {
+        //         console.log(`User edited successfully: ${user.name}`);
+        //         // You may want to refetch the users after editing
+        //         // For simplicity, I'm just logging the success for now
+        //     })
+        //     .catch((error) => {
+        //         console.error('Error editing user:', error);
+        //     });
+
         closeMenu();
     };
 
-    const handleDelete = () => {
-        // Handle delete operation
-        console.log(`Delete user: ${user.name}`);
-        closeMenu();
+    const handleDelete = async () => {
+        try {
+            await deleteUser(user.id);
+            console.log(`User deleted successfully: ${user.name}`);
+            setLoading(true);
+            await getUsers();
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        } finally {
+            closeMenu();
+            setLoading(false);
+        }
     };
+
 
     const closeMenu = () => {
         setIsMenuOpen(false);
@@ -107,12 +117,18 @@ const UserCard = ({ user }) => {
 
     return (
         <div className="bg-white rounded-md overflow-hidden shadow-md m-4 flex">
-            <img src={user.image} alt={`${user.name}'s profile`} className="w-32 h-32 object-cover object-left" />
+            {user.image ? (
+                <img src={user.image} alt={`${user.name}'s profile`} className="w-32 h-32 object-cover object-left" />
+            ) : (
+                <div className="w-32 h-32 bg-blue-300 flex items-center justify-center">
+                    <FaUser size={40} color="#FFFFFF" />
+                </div>
+            )}
 
             <div className="p-4 flex-1">
                 <h2 className="text-lg font-semibold">{user.name}</h2>
                 <p className="text-gray-600">{user.phoneNumber}</p>
-                <p className="text-gray-500 text-sm">Registered on {user.registrationDate}</p>
+                <p className="text-gray-500 text-sm">Registered on {user.registration_date}</p>
 
                 {/* Three dots menu */}
                 <div className="mt-2 flex justify-end">
@@ -147,6 +163,5 @@ const UserCard = ({ user }) => {
         </div>
     );
 };
-
 
 export default Users

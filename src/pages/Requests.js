@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaUserPlus, FaEllipsisV, FaCheck, FaTimes } from 'react-icons/fa';
 
-const RegistrationRequests = ({ darkMode }) => {
+const RegistrationRequests = () => {
   // Data . . .
   const dummyRequests = [
     {

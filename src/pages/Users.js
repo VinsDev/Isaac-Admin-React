@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaEllipsisV, FaEdit, FaTrash, FaGlobe, FaUser } from 'react-icons/fa';
 import { getUsers, editUser, deleteUser } from '../services/firebaseServices';
-// import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import { TailSpin } from 'react-loader-spinner';
 
 
@@ -35,9 +34,9 @@ const Users = () => {
 
         return (
             <div>
-                {users.map((user) => (
+                {users.map((user, index) => (
                     <div key={user.id} className="mb-4">
-                        <UserCard user={user} setLoading={setLoading} />
+                        <UserCard user={user} index={index} setLoading={setLoading} />
                     </div>
                 ))}
             </div>
@@ -73,7 +72,7 @@ const Header = () => {
     </div>)
 };
 
-const UserCard = ({ user, setLoading }) => {
+const UserCard = ({ user, index, setLoading }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleMenuToggle = () => {
@@ -85,7 +84,7 @@ const UserCard = ({ user, setLoading }) => {
         // const newData = {};
         // editUser(user.id, newData)
         //     .then(() => {
-        //         console.log(`User edited successfully: ${user.name}`);
+        //         console.log(`User edited successfully: ${user.phone}`);
         //         // You may want to refetch the users after editing
         //         // For simplicity, I'm just logging the success for now
         //     })
@@ -99,7 +98,7 @@ const UserCard = ({ user, setLoading }) => {
     const handleDelete = async () => {
         try {
             await deleteUser(user.id);
-            console.log(`User deleted successfully: ${user.name}`);
+            console.log(`User deleted successfully: ${user.phone}`);
             setLoading(true);
             await getUsers();
         } catch (error) {
@@ -118,7 +117,7 @@ const UserCard = ({ user, setLoading }) => {
     return (
         <div className="bg-white rounded-md overflow-hidden shadow-md m-4 flex">
             {user.image ? (
-                <img src={user.image} alt={`${user.name}'s profile`} className="w-32 h-32 object-cover object-left" />
+                <img src={user.image} alt={`${user.phone}'s profile`} className="w-32 h-32 object-cover object-left" />
             ) : (
                 <div className="w-32 h-32 bg-blue-300 flex items-center justify-center">
                     <FaUser size={40} color="#FFFFFF" />
@@ -126,8 +125,8 @@ const UserCard = ({ user, setLoading }) => {
             )}
 
             <div className="p-4 flex-1">
-                <h2 className="text-lg font-semibold">{user.name}</h2>
-                <p className="text-gray-600">{user.phoneNumber}</p>
+                <h2 className="text-md ">{`User ${index + 1}`}</h2>
+                <p className="text-lg font-semibold">{user.phone}</p>
                 <p className="text-gray-500 text-sm">Registered on {user.registration_date}</p>
 
                 {/* Three dots menu */}

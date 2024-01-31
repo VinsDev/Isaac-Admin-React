@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -17,6 +17,20 @@ const Login = () => {
     { username: 'Isaac', email: 'john.doe@example.com', phone: '9876543210', password: '123' },
     { username: 'Manji', email: 'john.doe@example.com', phone: '9876543210', password: '1234' },
   ];
+
+  // Wake server up . . .
+  useEffect(() => {
+    const wakeUpServer = async () => {
+      try {
+        await fetch('https://door-lock-system.onrender.com/getUsers');
+        console.log('Server woke up successfully!');
+      } catch (error) {
+        console.error('Error waking up server:', error);
+      }
+    };
+
+    wakeUpServer();
+  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();

@@ -1,0 +1,96 @@
+*,
+*:before,
+*:after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.circular-progress {
+  position: relative;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.circular-progress:before {
+  content: '';
+  position: absolute;
+  height: 84%;
+  width: 84%;
+  background-color: #ffffff;
+  border-radius: 50%;
+}
+
+
+/* Hide scrollbar by default */
+.scroll-container {
+  overflow-x: hidden;
+  overflow-y: hidden; /* Ensure vertical overflow is hidden as well */
+  white-space: nowrap; /* Prevent content from wrapping to a new line */
+}
+
+/* Show scrollbar when content overflows horizontally */
+.scroll-container:hover {
+  overflow-x: hidden;
+}
+
+/* Style for WebKit (Chrome, Safari) browsers */
+.scroll-container::-webkit-scrollbar {
+  height: 7px; /* Set the height as needed */
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #c0bfbf;
+  border-radius: 10px;
+  margin-top: 25px; /* Adjust the margin-top to move the scrollbar down */
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Style for Firefox browser */
+.scroll-container::-moz-scrollbar-thumb {
+  background-color: #bebebe;
+  border-radius: 10px;
+  margin-top: 25px; /* Adjust the margin-top to move the scrollbar down */
+}
+
+.scroll-container::-moz-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+
+/* Scroll 2 . . . . . */
+.scroll-container2:hover {
+  overflow-x: auto;
+}
+
+/* Style for WebKit (Chrome, Safari) browsers */
+.scroll-container2::-webkit-scrollbar {
+  height: 7px; /* Set the height as needed */
+}
+
+.scroll-container2::-webkit-scrollbar-thumb {
+  background-color: #c0bfbf;
+  border-radius: 10px;
+  margin-top: 25px; /* Adjust the margin-top to move the scrollbar down */
+}
+
+.scroll-container2::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Style for Firefox browser */
+.scroll-container2::-moz-scrollbar-thumb {
+  background-color: #bebebe;
+  border-radius: 10px;
+  margin-top: 25px; /* Adjust the margin-top to move the scrollbar down */
+}
+
+.scroll-container2::-moz-scrollbar-track {
+  background-color: #f1f1f1;
+}

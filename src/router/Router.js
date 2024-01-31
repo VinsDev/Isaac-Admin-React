@@ -18,7 +18,7 @@ const Router = () => {
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/app" element={<App darkMode={darkMode} />}>
-                        <Route index path='/app/dashboard' element={<Dashboard />} />
+                        <Route path='/app/dashboard' element={<Dashboard />} />
                         <Route path='/app/users' element={<Users />} />
                         <Route path='/app/otp' element={<Otps />} />
                         <Route path='/app/requests' element={<RegistrationRequests />} />

@@ -1,14 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FaBell, FaBolt, FaCalendar, FaChevronDown, FaChevronLeft, FaChevronRight, FaDollarSign, FaEnvelope, FaExclamation, FaEye, FaEyeSlash, FaFilter, FaGlobe, FaImage, FaPaste, FaStarAndCrescent, FaUser, FaVolumeUp, FaWallet } from 'react-icons/fa';
-import { PieChart } from '@mui/x-charts';
+import { FaChevronLeft, FaChevronRight, FaGlobe, FaImage, FaUser } from 'react-icons/fa';
 import '../styles/CircularProgressBar.css';
 import * as utils from '../utils/utils';
-import ThemeSwitcher from '../components/ThemeSwitcher';
-import SuperAdminIcon from '../assets/icons/superadmin.svg'
-import WithdrawIcon from '../assets/icons/withdrawn.svg'
-import PotentialCommisionIcon from '../assets/icons/potential-commision.svg'
-import EarnedCommisionIcon from '../assets/icons/earned-commision.svg'
-import RefundIcon from '../assets/icons/refund.svg'
+
 
 const Dashboard = ({ darkMode, setDarkMode }) => {
     // Data . . .

@@ -1,19 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaUser, FaUniversity, FaShoppingCart, FaClipboardList, FaAddressCard, FaAccessibleIcon } from 'react-icons/fa';
+import { FaUser, FaAccessibleIcon, FaUniversity, FaShoppingCart, FaClipboardList } from 'react-icons/fa';
 
 const Sidebar = () => {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const [activeItem, setActiveItem] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedActiveItem = localStorage.getItem('activeItem');
+    setActiveItem(storedActiveItem || "Users");
+  }, []);
 
   const handleItemClick = (itemName) => {
     // Set the clicked item as active and navigate to the corresponding route
     setActiveItem(itemName);
-    navigate(`/app/${itemName.toLowerCase()}`); // Assuming the route names match the item names
+    navigate(`/app/${itemName.toLowerCase()}`);
+    localStorage.setItem('activeItem', itemName);
+  };
+
+  const handleLogout = () => {
+    // Clear user information from localStorage and navigate to the login page
+    localStorage.removeItem('activeItem');
+    navigate('/');
   };
 
   const sidebarItems = [
-    { icon: <FaHome />, text: "Dashboard" },
     { icon: <FaUser />, text: "Users" },
     { icon: <FaAccessibleIcon />, text: "Access" },
     { icon: <FaUniversity />, text: "OTP" },
@@ -41,6 +52,15 @@ const Sidebar = () => {
           onItemClick={() => handleItemClick(item.text)}
         />
       ))}
+      {/* Logout button */}
+      <button
+        className={`flex items-center justify-center gap-[15px] py-[8px] pl-[50px] pr-[50px] mt-[25px] cursor-pointer text-blue-500 border border-blue-500 hover:text-white hover:bg-blue-500 hover:border-transparent focus:outline-none rounded-full`}
+        onClick={handleLogout}
+      >
+        <p className={`text-[18px] font-normal tracking-wide`}>Logout</p>
+      </button>
+
+
     </div>
   );
 };

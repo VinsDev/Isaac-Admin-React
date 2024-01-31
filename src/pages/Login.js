@@ -15,7 +15,7 @@ const Login = () => {
     // Check the entered username and password
     if (username === 'Vincent' && password === '123') {
       // Redirect to the app if the credentials are correct
-      navigate('/app/dashboard');
+      navigate('/app/users');
     } else {
       // Display an error message if the credentials are incorrect
       setLoginStatus('Incorrect username or password');
@@ -23,10 +23,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cover bg-fixed" style={{ backgroundImage: 'url("assets/images/background.jpg")' }}>
-      <div className="bg-whitesmoke p-8 rounded-lg shadow-lg w-96">
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-fixed" style={{ backgroundImage: 'url("/image.jpg")' }}>
+      <div className="bg-white opacity-90 p-8 rounded-lg shadow-lg w-96 border-[1px]">
         <div className="mb-8 flex justify-center">
-          <div className="bg-blue-500 text-white font-bold flex items-center justify-center text-[20px] p-[8px] rounded-[8px]">
+          <div className=" text-black  flex items-center justify-center text-[22px] font-bold p-[8px]">
             Door Security System Login
           </div>
         </div>
@@ -65,7 +65,7 @@ const Login = () => {
             </div>
           )}
 
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md block mx-auto">
+          <button type="submit" className="bg-blue-500 text-white px-[50px] py-2 rounded-md block mx-auto">
             Login
           </button>
           <a href="#" className="text-right block mt-4 text-blue-500">Forgot Password</a>

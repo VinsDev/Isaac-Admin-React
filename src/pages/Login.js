@@ -1,30 +1,42 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
-import 'tailwindcss/tailwind.css'; // Import Tailwind CSS
+import { useNavigate } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import 'tailwindcss/tailwind.css';
 
 const Login = () => {
-  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState(null);
 
+  const users = [
+    { username: 'Vincent', email: 'vincent@example.com', phone: '1234567890', password: '123' },
+    { username: 'Isaac', email: 'john.doe@example.com', phone: '9876543210', password: '123' },
+  ];
+
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Check the entered username and password
-    if (username === 'Vincent' && password === '123') {
+    // Check the entered credentials against the list of users
+    const matchedUser = users.find(
+      (user) => (user.username === username || user.email === username || user.phone === username) && user.password === password
+    );
+
+    if (matchedUser) {
       // Redirect to the app if the credentials are correct
       navigate('/app/users');
     } else {
       // Display an error message if the credentials are incorrect
-      setLoginStatus('Incorrect username or password');
+      setLoginStatus('Incorrect username, email, phone number, or password');
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-cover bg-fixed" style={{ backgroundImage: 'url("/image.jpg")' }}>
-      <div className="bg-white opacity-90 p-8 rounded-lg shadow-lg w-96 border-[1px]">
+      <Box className="bg-white opacity-90 p-8 rounded-lg shadow-lg w-96 border-[1px]">
         <div className="mb-8 flex justify-center">
           <div className=" text-black  flex items-center justify-center text-[22px] font-bold p-[8px]">
             Door Security System Login
@@ -32,31 +44,23 @@ const Login = () => {
         </div>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-700">Username</label>
-            <input
-              type="text"
-              className="form-input mt-1 block w-full"
-              id="username"
-              name="username"
-              aria-describedby="emailHelp"
+            <TextField
+              fullWidth
+              label="Username/Email/Phone"
+              variant="outlined"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700">Password</label>
-            <input
+            <TextField
+              fullWidth
               type="password"
-              className="form-input mt-1 block w-full"
-              id="password"
-              name="password"
+              label="Password"
+              variant="outlined"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-          </div>
-          <div className="mb-4 flex items-center">
-            <input type="checkbox" className="form-checkbox" id="remember" />
-            <label className="ml-2 text-gray-700" htmlFor="remember">Remember account</label>
           </div>
 
           {loginStatus && (
@@ -65,12 +69,12 @@ const Login = () => {
             </div>
           )}
 
-          <button type="submit" className="bg-blue-500 text-white px-[50px] py-2 rounded-md block mx-auto">
+          <Button type="submit" variant="outlined" color="primary" fullWidth>
             Login
-          </button>
+          </Button>
           <a href="#" className="text-right block mt-4 text-blue-500">Forgot Password</a>
         </form>
-      </div>
+      </Box>
     </div>
   );
 };

@@ -14,7 +14,8 @@ const Login = () => {
 
   const users = [
     { username: 'Vincent', email: 'vincent@example.com', phone: '1234567890', password: '123' },
-    { username: 'Isaac', email: 'john.doe@example.com', phone: '9876543210', password: '123' },
+    { username: 'ShaakaaRejoice', email: 'john.doe@example.com', phone: '9876543210', password: '150900' },
+    { username: 'terwasebem', email: 'john.doe@example.com', phone: '9876543210', password: '408000' },
     { username: 'Manji', email: 'john.doe@example.com', phone: '9876543210', password: '1234' },
   ];
 

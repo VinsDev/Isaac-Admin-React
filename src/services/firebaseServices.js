@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore';
 // import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -47,4 +47,68 @@ export const deleteUser = async (userId) => {
         console.error('Error deleting user from Firestore:', error);
         throw error;
     }
+};
+
+
+export const getRegistrationRequests = async () => {
+    try {
+        const requestsCollection = collection(db, 'requests');
+        const snapshot = await getDocs(requestsCollection);
+
+        return snapshot.docs.map((doc) => {
+            const data = doc.data();
+            const formattedDate = new Date(data.creationTime.seconds * 1000).toLocaleString();
+
+            return { id: doc.id, ...data, creationTime: formattedDate };
+        });
+    } catch (error) {
+        console.error('Error fetching registration requests from Firestore:', error);
+        throw error;
+    }
+};
+
+export const updateRequestStatus = async (requestId, newStatus) => {
+    try {
+        const requestDocRef = doc(db, 'requests', requestId);
+
+        // Update status in Firestore
+        await updateDoc(requestDocRef, { status: newStatus });
+
+        console.log(`Request ${requestId} updated to ${newStatus}.`);
+    } catch (error) {
+        console.error('Error updating request status:', error);
+        throw error;
+    }
+};
+
+export const createUser = async (phoneNumber) => {
+    try {
+        // Check if the user with the given phone number already exists
+        const existingUsers = await getUsers();
+        const existingUser = existingUsers.find(user => user.phone === phoneNumber);
+
+        if (!existingUser) {
+            // User doesn't exist, create a new user
+            const registrationDate = new Date().toLocaleString();
+
+            await setDoc(doc(db, 'users', phoneNumber), {
+                phone: phoneNumber,
+                registration_date: registrationDate,
+                id: generateUniqueId(), // Replace with your logic to generate a unique ID
+                // Other user properties...
+            });
+
+            console.log(`User with phone number ${phoneNumber} created.`);
+        } else {
+            console.log(`User with phone number ${phoneNumber} already exists.`);
+        }
+    } catch (error) {
+        console.error('Error creating user:', error);
+        throw error;
+    }
+};
+
+// Example function to generate a unique ID (you may want to use a library or your own logic)
+const generateUniqueId = () => {
+    return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
 };

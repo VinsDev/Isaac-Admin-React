@@ -15,6 +15,7 @@ const Login = () => {
   const users = [
     { username: 'Vincent', email: 'vincent@example.com', phone: '1234567890', password: '123' },
     { username: 'Isaac', email: 'john.doe@example.com', phone: '9876543210', password: '123' },
+    { username: 'Manji', email: 'john.doe@example.com', phone: '9876543210', password: '1234' },
   ];
 
   const handleLogin = (e) => {
@@ -30,7 +31,7 @@ const Login = () => {
       navigate('/app/users');
     } else {
       // Display an error message if the credentials are incorrect
-      setLoginStatus('Incorrect username, email, phone number, or password');
+      setLoginStatus('Incorrect username or password! Try Again.');
     }
   };
 
@@ -64,7 +65,7 @@ const Login = () => {
           </div>
 
           {loginStatus && (
-            <div id="loginStatus" className="alert alert-danger mb-4">
+            <div id="loginStatus" className="alert alert-danger mb-4 text-red-700">
               {loginStatus}
             </div>
           )}

@@ -38,7 +38,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-cover bg-fixed" style={{ backgroundImage: 'url("/image.jpg")' }}>
       <Box className="bg-white opacity-90 p-8 rounded-lg shadow-lg w-96 border-[1px]">
         <div className="mb-8 flex justify-center">
-          <div className=" text-black  flex items-center justify-center text-[22px] font-bold p-[8px]">
+          <div className=" text-black  flex items-center justify-center text-[24px] font-normal p-[8px]">
             Door Security System Login
           </div>
         </div>

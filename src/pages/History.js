@@ -1,33 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaHistory } from 'react-icons/fa';
+import { getAllOTPHistory } from '../services/firebaseServices';
 
 const CheckInHistory = ({ darkMode }) => {
-  // Data . . .
-  const checkInHistory = [
-    {
-      id: 1,
-      userName: 'John Doe',
-      checkInTime: '2022-02-15T14:30:00',
-    },
-    {
-      id: 2,
-      userName: 'Jane Smith',
-      checkInTime: '2022-02-20T10:45:00',
-    },
-    {
-      id: 3,
-      userName: 'Bob Johnson',
-      checkInTime: '2022-02-25T16:20:00',
-    },
-    // Add more check-in history data as needed
-  ];
+  const [otpHistory, setOTPHistory] = useState([]);
 
-  const CheckInCard = ({ record }) => {
+  const fetchOTPHistory = async () => {
+    try {
+      const history = await getAllOTPHistory();
+      setOTPHistory(history);
+    } catch (error) {
+      console.error('Error fetching OTP history:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Initial fetch
+    fetchOTPHistory();
+
+    // Fetch OTP history every 5 seconds
+    const intervalId = setInterval(fetchOTPHistory, 5000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const OTPCard = ({ otp }) => {
     return (
-      <div className="bg-white rounded-md overflow-hidden shadow-md m-4 flex">
+      <div className="bg-white rounded-md overflow-hidden shadow-lg m-4 flex">
         <div className="p-4 flex-1">
-          <h2 className="text-lg font-semibold">User: {record.userName}</h2>
-          <p className="text-gray-500 text-sm">Checked in on {new Date(record.checkInTime).toLocaleString()}</p>
+          <h2 className="text-lg font-semibold">Code: {otp.code}</h2>
+          <p className="text-gray-500 text-sm">
+            Phone Number: {otp.phoneNumber}, Verified on {new Date(otp.verificationTime).toLocaleString()}
+          </p>
         </div>
       </div>
     );
@@ -38,13 +43,13 @@ const CheckInHistory = ({ darkMode }) => {
       <Header />
       <div>
         <h2 className="text-lg font-semibold mb-2">Check-In History</h2>
-        <div>
-          {checkInHistory.map((record) => (
-            <div key={record.id} className="mb-4">
-              <CheckInCard record={record} />
-            </div>
-          ))}
-        </div>
+
+        {/* Render OTP history */}
+        {otpHistory.map((otp) => (
+          <div key={otp.id} className="mb-4">
+            <OTPCard otp={otp} />
+          </div>
+        ))}
       </div>
     </div>
   );

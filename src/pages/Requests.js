@@ -97,7 +97,7 @@ const RegistrationRequests = () => {
               </button>
             </div>
           )}
-          {request.status === 'approved' && (
+          {request.status === 'rejected' && (
             <div className="mt-2 flex justify-end">
               <button
                 onClick={() => handleApprove(request)}

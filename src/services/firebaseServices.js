@@ -147,3 +147,16 @@ export const getAllOTPs = async () => {
         throw error;
     }
 };
+
+export const getAllOTPHistory = async () => {
+    try {
+        const otpHistoryCollection = collection(db, 'history');  // Use 'collection' instead of 'db.collection'
+        const snapshot = await getDocs(otpHistoryCollection);
+        const otps = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        return otps;
+    } catch (error) {
+        console.error('Error fetching OTP history from Firestore:', error);
+        throw error;
+    }
+};

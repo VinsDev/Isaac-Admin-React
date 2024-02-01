@@ -42,6 +42,9 @@ const Sidebar = () => {
         <div className='flex justify-center items-center'>
           <h2 className={`text-[#24245c]/[0.9] text-[18px] leading-[25px] font-bold tracking-wide $`}>SYSTEM</h2>
         </div>
+        <div className='flex justify-center items-center'>
+          <h2 className={`text-[#24245c] text-[16px] leading-[25px] font-normal tracking-bold $`}>2024 PROTOTYPE</h2>
+        </div>
       </div>
       {sidebarItems.map((item, index) => (
         <SidebarItem

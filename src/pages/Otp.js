@@ -1,84 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEllipsisV, FaTrash, FaKey, FaClock } from 'react-icons/fa';
+import { getAllOTPs, getUsers } from '../services/firebaseServices';
+import { format, parseISO } from 'date-fns';
+import { TailSpin } from 'react-loader-spinner';
 
 const Otps = () => {
-    // Data . . .
-    const dummyOtps = [
-        {
-            id: 1,
-            userId: 1, // Associated user ID
-            code: '123456',
-            expirationTime: '2022-02-15T12:00:00',
-        },
-        {
-            id: 2,
-            userId: 2, // Associated user ID
-            code: '123456',
-            expirationTime: '2022-02-15T12:00:00',
-        },
-        {
-            id: 3,
-            userId: 3, // Associated user ID
-            code: '123456',
-            expirationTime: '2022-02-15T12:00:00',
-        },
-        {
-            id: 4,
-            userId: 4, // Associated user ID
-            code: '123456',
-            expirationTime: '2022-02-15T12:00:00',
-        },
-        {
-            id: 5,
-            userId: 5, // Associated user ID
-            code: '123456',
-            expirationTime: '2022-02-15T12:00:00',
-        },
-    ];
+    const [otps, setOtps] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const dummyUsers = [
-        {
-            id: 1,
-            name: 'John Doe',
-            phoneNumber: '123-456-7890',
-        },
-        {
-            id: 2,
-            name: 'John Doe',
-            phoneNumber: '123-456-7890',
-        },
-        {
-            id: 3,
-            name: 'John Doe',
-            phoneNumber: '123-456-7890',
-        },
-        {
-            id: 4,
-            name: 'John Doe',
-            phoneNumber: '123-456-7890',
-        },
-        {
-            id: 5,
-            name: 'John Doe',
-            phoneNumber: '123-456-7890',
-        },
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const fetchedOtps = await getAllOTPs();
+                const fetchedUsers = await getUsers();
 
-    const getUserById = (userId) => {
-        return dummyUsers.find((user) => user.id === userId);
+                // Sort OTPs by expirationDate in descending order (latest first)
+                const sortedOtps = fetchedOtps.sort(
+                    (a, b) => parseISO(b.expirationDate) - parseISO(a.expirationDate)
+                );
+
+                setOtps(sortedOtps);
+                setUsers(fetchedUsers);
+                setLoading(false);
+            } catch (error) {
+                // Handle error
+                console.error('Error fetching data:', error);
+                setLoading(false);
+            }
+        };
+
+        // Fetch data initially
+        fetchData();
+
+        // Refresh data every 5 seconds
+        const intervalId = setInterval(fetchData, 5000);
+
+        // Clear interval on component unmount
+        return () => clearInterval(intervalId);
+    }, []);
+
+    const getUserByPhone = (phone) => {
+        return users.find((user) => user.phone === phone);
     };
 
     const OtpList = () => {
         return (
             <div>
-                {dummyOtps.map((otp) => (
+                {otps.map((otp) => (
                     <div key={otp.id} className="mb-4">
-                        <OtpCard otp={otp} user={getUserById(otp.userId)} />
+                        <OtpCard otp={otp} user={getUserByPhone(otp.phoneNumber)} />
                     </div>
                 ))}
             </div>
         );
     };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <TailSpin type="TailSpin" color="blue" height={50} width={50} />
+            </div>
+        );
+    }
 
     return (
         <div className={`min-h-screen bg-[#f6f6f6] pl-[15px]`}>
@@ -92,15 +76,15 @@ const Header = () => {
     return (
         <div>
             <div className={`px-[25px] py-[20px] bg-white rounded-bl-[5px] mb-[20px]`}>
-                <div className='flex flex-col md:flex-row justify-between items-center'>
-                    <div className='mb-[10px] md:mb-0'>
-                        <p className='text-[#23255c] text-[20px] leading-[25px] font-bold'>OTPs</p>
+                <div className="flex flex-col md:flex-row justify-between items-center">
+                    <div className="mb-[10px] md:mb-0">
+                        <p className="text-[#23255c] text-[20px] leading-[25px] font-bold">OTPs</p>
                     </div>
-                    <div className='flex items-center justify-center'>
-                        <div className='pr-[20px] border-r-[1px]'></div>
-                        <div className='flex items-center gap-[20px] px-[20px]'>
-                            <FaKey color='#3c3e6e' />
-                            <FaClock color='#3c3e6e' />
+                    <div className="flex items-center justify-center">
+                        <div className="pr-[20px] border-r-[1px]"></div>
+                        <div className="flex items-center gap-[20px] px-[20px]">
+                            <FaKey color="#3c3e6e" />
+                            <FaClock color="#3c3e6e" />
                         </div>
                     </div>
                 </div>
@@ -130,14 +114,13 @@ const OtpCard = ({ otp, user }) => {
         <div className="bg-white rounded-md overflow-hidden shadow-md m-4 flex">
             <div className="p-4 flex-1">
                 <h2 className="text-lg font-semibold">OTP Code: {otp.code}</h2>
-                <p className="text-gray-500 text-sm">Expires on {new Date(otp.expirationTime).toLocaleString()}</p>
+                <p className="text-gray-500 text-sm">Expires on {format(parseISO(otp.expirationDate), 'yyyy-MM-dd HH:mm:ss')}</p>
 
                 {/* Associated User Info */}
                 {user && (
                     <div className="mt-2">
                         <p className="text-sm text-gray-600">Associated User:</p>
-                        <p className="text-sm font-semibold">{user.name}</p>
-                        <p className="text-sm">{user.phoneNumber}</p>
+                        <p className="text-md font-semibold">{user.phone}</p>
                     </div>
                 )}
 

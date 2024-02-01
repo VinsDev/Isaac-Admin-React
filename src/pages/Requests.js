@@ -3,15 +3,22 @@ import { FaUserPlus, FaCheck, FaTimes } from 'react-icons/fa';
 import { getRegistrationRequests, updateRequestStatus, createUser } from '../services/firebaseServices';
 import { TailSpin } from 'react-loader-spinner';
 
+
 const RegistrationRequests = () => {
   const [allRequests, setAllRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchRequests = async () => {
+    const fetchData = async () => {
       try {
         const requests = await getRegistrationRequests();
-        setAllRequests(requests);
+        // Sort requests by status so that pending requests come first
+        const sortedRequests = requests.sort((a, b) => {
+          if (a.status === 'pending') return -1;
+          if (b.status === 'pending') return 1;
+          return 0;
+        });
+        setAllRequests(sortedRequests);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching requests:', error);
@@ -20,19 +27,19 @@ const RegistrationRequests = () => {
     };
 
     // Initial fetch
-    fetchRequests();
+    fetchData();
 
     // Fetch requests every 5 seconds
-    const intervalId = setInterval(fetchRequests, 5000);
+    const intervalId = setInterval(fetchData, 5000);
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
 
-  // Filter requests based on status
-  const pendingRequests = allRequests.filter(request => request.status === 'pending');
-  const approvedRequests = allRequests.filter(request => request.status === 'approved');
-  const rejectedRequests = allRequests.filter(request => request.status === 'rejected');
+  // Separate requests based on status
+  const pendingRequests = allRequests.filter((request) => request.status === 'pending');
+  const approvedRequests = allRequests.filter((request) => request.status === 'approved');
+  const rejectedRequests = allRequests.filter((request) => request.status === 'rejected');
 
   const handleApprove = async (request) => {
     try {
@@ -90,7 +97,7 @@ const RegistrationRequests = () => {
               </button>
             </div>
           )}
-          {request.status === 'rejected' && (
+          {request.status === 'approved' && (
             <div className="mt-2 flex justify-end">
               <button
                 onClick={() => handleApprove(request)}

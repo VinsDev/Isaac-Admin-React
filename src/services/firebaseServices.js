@@ -129,7 +129,21 @@ export const changeUserStatus = async (phone, newStatus) => {
     }
 };
 
-// Example function to generate a unique ID (you may want to use a library or your own logic)
 const generateUniqueId = () => {
     return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+};
+
+export const getAllOTPs = async () => {
+    try {
+        const otpsCollection = collection(db, 'otp');
+        // const otpsQuery = query(otpsCollection);
+
+        const snapshot = await getDocs(otpsCollection);
+        const otps = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        return otps;
+    } catch (error) {
+        console.error('Error fetching OTPs from Firestore:', error);
+        throw error;
+    }
 };

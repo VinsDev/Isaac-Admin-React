@@ -114,7 +114,7 @@ const OtpCard = ({ otp, user }) => {
         <div className="bg-white rounded-md overflow-hidden shadow-md m-4 flex">
             <div className="p-4 flex-1">
                 <h2 className="text-lg font-semibold">OTP Code: {otp.code}</h2>
-                <p className="text-gray-500 text-sm">Expires on {format(parseISO(otp.expirationDate), 'yyyy-MM-dd HH:mm:ss')}</p>
+                <p className="text-gray-500 text-sm">Expires on {otp.expirationDate}</p>
 
                 {/* Associated User Info */}
                 {user && (

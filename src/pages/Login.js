@@ -17,6 +17,7 @@ const Login = () => {
     { username: 'ShaakaaRejoice', email: 'john.doe@example.com', phone: '9876543210', password: '150900' },
     { username: 'terwasebem', email: 'john.doe@example.com', phone: '9876543210', password: '408000' },
     { username: 'Manji', email: 'john.doe@example.com', phone: '9876543210', password: '1234' },
+    { username: 'EEELAB', email: 'john.doe@example.com', phone: '9876543210', password: '2024' },
   ];
 
   // Wake server up . . .
@@ -37,9 +38,13 @@ const Login = () => {
     e.preventDefault();
 
     // Check the entered credentials against the list of users
-    const matchedUser = users.find(
-      (user) => (user.username === username || user.email === username || user.phone === username) && user.password === password
+    const matchedUser = users.find(user =>
+      (user.username.toLowerCase().trim() === username.toLowerCase().trim() ||
+        user.email.toLowerCase().trim() === username.toLowerCase().trim() ||
+        user.phone.toLowerCase().trim() === username.toLowerCase().trim()) &&
+      user.password === password
     );
+
 
     if (matchedUser) {
       // Redirect to the app if the credentials are correct

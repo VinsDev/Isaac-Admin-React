@@ -37,10 +37,10 @@ const Sidebar = () => {
       {/* Logo */}
       <div className='pt-[30px] pb-[20px] items-center justify-center'>
         <div className='flex justify-center relative'>
-          <h2 className={`text-[#24245c]/[0.9] text-[18px] leading-[25px] font-bold tracking-wide $`}>DOOR SECURITY</h2>
+          <h2 className={`text-[#24245c]/[0.9] text-[18px] leading-[25px] font-bold tracking-wide $`}>JOSTUM DOOR</h2>
         </div>
-        <div className='flex justify-center items-center'>
-          <h2 className={`text-[#24245c]/[0.9] text-[18px] leading-[25px] font-bold tracking-wide $`}>SYSTEM</h2>
+        <div className='flex justify-center relative'>
+          <h2 className={`text-[#24245c]/[0.9] text-[18px] leading-[25px] font-bold tracking-wide $`}>SECURITY SYSTEM</h2>
         </div>
         <div className='flex justify-center items-center'>
           <h2 className={`text-[#24245c] text-[16px] leading-[25px] font-normal tracking-bold $`}>2024 PROTOTYPE</h2>

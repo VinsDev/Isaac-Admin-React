@@ -6,17 +6,7 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedActiveItem = localStorage.getItem('activeItem');
-    setActiveItem(storedActiveItem || "Users");
-  }, []);
 
-  const handleItemClick = (itemName) => {
-    // Set the clicked item as active and navigate to the corresponding route
-    setActiveItem(itemName);
-    navigate(`/app/${itemName.toLowerCase()}`);
-    localStorage.setItem('activeItem', itemName);
-  };
 
   const handleLogout = () => {
     // Clear user information from localStorage and navigate to the login page
@@ -36,13 +26,13 @@ const Sidebar = () => {
     <div className="min-h-screen px-[10px]">
       {/* Logo */}
       <div className='pt-[30px] pb-[20px] items-center justify-center'>
-        <div className='flex justify-center relative'>
+        <div className='relative flex justify-center'>
           <h2 className={`text-[#24245c]/[0.9] text-[18px] leading-[25px] font-bold tracking-wide $`}>JOSTUM DOOR</h2>
         </div>
-        <div className='flex justify-center relative'>
+        <div className='relative flex justify-center'>
           <h2 className={`text-[#24245c]/[0.9] text-[18px] leading-[25px] font-bold tracking-wide $`}>SECURITY SYSTEM</h2>
         </div>
-        <div className='flex justify-center items-center'>
+        <div className='flex items-center justify-center'>
           <h2 className={`text-[#24245c] text-[16px] leading-[25px] font-normal tracking-bold $`}>2024 PROTOTYPE</h2>
         </div>
       </div>
